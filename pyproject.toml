@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sturdytools"
+version = "0.1.0"
+description = "Retries, timeouts, rate limits and circuit breakers for AI agent tools"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "Meenal Asesh"}]
+requires-python = ">=3.9"
+dependencies = []
+keywords = ["agents", "llm", "tools", "retry", "circuit breaker", "rate limit"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.urls]
+Homepage = "https://github.com/ai-with-md/sturdytools"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
