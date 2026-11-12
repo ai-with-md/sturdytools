@@ -122,7 +122,7 @@ pip install -e ".[dev]"
 pytest
 ```
 
-Tests run on Python 3.9, 3.11 and 3.13 on every push.
+Tests run on Python 3.10, 3.12 and 3.13 on every push.
 
 ## License
 
