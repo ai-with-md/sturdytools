@@ -2,6 +2,11 @@
 
 Retries, timeouts, rate limits and circuit breakers for the tools an AI agent calls.
 
+[![PyPI](https://img.shields.io/pypi/v/sturdytools)](https://pypi.org/project/sturdytools/)
+[![tests](https://github.com/ai-with-md/sturdytools/actions/workflows/tests.yml/badge.svg)](https://github.com/ai-with-md/sturdytools/actions/workflows/tests.yml)
+![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)
+![License: MIT](https://img.shields.io/badge/license-MIT-green)
+
 An agent is only as reliable as its tools. A search API that drops one request in fifty, a database that hangs, or a service that hits its rate limit can end an agent run, or put a raw stack trace in front of the user. Most of these failures are temporary, and the rest can be handled if the model gets a clear message it can act on.
 
 sturdytools is one decorator that handles this for any Python function, sync or async, with no dependencies.
@@ -22,10 +27,12 @@ Error: the tool 'search_orders' failed after 4 attempts (ConnectionError: connec
 Check the arguments, try a different approach, or tell the user it is unavailable.
 ```
 
+[![Demo: a plain tool crashes, the wrapped tool retries, times out, and stops calling a service that is down](https://raw.githubusercontent.com/ai-with-md/sturdytools/main/docs/demo.png)](https://github.com/ai-with-md/sturdytools/blob/main/examples/flaky_tools_demo.py)
+
 ## Install
 
 ```bash
-pip install git+https://github.com/ai-with-md/sturdytools
+pip install sturdytools
 ```
 
 Python 3.9 or newer. No other packages are needed.
@@ -53,6 +60,36 @@ Each call goes through the same steps:
 5. Otherwise use the fallback, return a message, or raise, depending on the settings.
 
 The wrapper keeps the original function name, docstring and signature, which is what agent frameworks read to build the tool description for the model. Put `@sturdy` closest to the function, under your framework's tool decorator.
+
+## Works with MCP servers and LangChain
+
+The wrapper keeps the function's name, docstring and signature, so frameworks build the same tool description as before. Put `@sturdy` under the framework's decorator, closest to the function:
+
+```python
+from mcp.server.mcpserver import MCPServer
+from sturdytools import sturdy
+
+server = MCPServer("weather")
+
+@server.tool()
+@sturdy(timeout=10, retries=2, on_error="message")
+async def get_weather(city: str) -> str:
+    """Current weather for a city."""
+    ...
+```
+
+```python
+from langchain_core.tools import tool
+from sturdytools import sturdy
+
+@tool
+@sturdy(timeout=10, retries=2, rate_limit="5/s", on_error="message")
+def search_orders(customer_id: str) -> list:
+    """Find recent orders for a customer."""
+    ...
+```
+
+Checked with mcp 2.3 and langchain-core 1.8, for sync and async tools: the tool schema and description are unchanged, retries happen inside the tool call, and a tool that gives up returns the error message to the model as its result.
 
 ## Sharing limits and breakers across tools
 
@@ -106,7 +143,13 @@ Here a `KeyError` for an unknown invoice goes straight back to the model as a me
 python examples/flaky_tools_demo.py
 ```
 
-The demo uses a fake weather service that drops connections, hangs, and then goes down, and prints what a plain tool and a wrapped tool do in each case. No API keys are needed.
+The [demo](https://github.com/ai-with-md/sturdytools/blob/main/examples/flaky_tools_demo.py) uses a fake weather service that drops connections, hangs, and then goes down, and prints what a plain tool and a wrapped tool do in each case. No API keys are needed.
+
+## How it compares
+
+- **[tenacity](https://github.com/jd/tenacity)** and **[stamina](https://github.com/hynek/stamina)** are excellent general retry libraries. If retries are all you need, use one of them.
+- sturdytools is narrower and aimed at agent tools: timeouts, retries, rate limits, a circuit breaker and a fallback in one decorator, plus an error message written for the model, so a failing tool becomes something the agent can reason about instead of a crash.
+- Agent frameworks have their own retry options (LangChain's `with_retry`, retry policies on LangGraph nodes). Those retry a whole step. sturdytools works on the single tool function, so it behaves the same in any framework, or in none.
 
 ## Limits
 
