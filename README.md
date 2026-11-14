@@ -156,6 +156,13 @@ The [demo](https://github.com/ai-with-md/sturdytools/blob/main/examples/flaky_to
 - Python cannot stop a running thread. When a sync tool times out, the caller gets `ToolTimeout` right away, but the original call keeps running in a background thread until it finishes on its own. For tools that can hang for a long time, prefer async, where the task is cancelled, or set a timeout in the client library as well.
 - Rate limits and breakers live in memory, per process. Several workers calling the same API each keep their own count.
 
+## More tools
+
+Small, free tools for building and checking AI systems:
+
+- **[evalsize](https://github.com/ai-with-md/evalsize)**: how many eval examples you need before a difference between prompts or models means anything.
+- **[costplan](https://github.com/ai-with-md/costplan)**: what an AI agent will cost and what budget cap to set, from a handful of pilot runs.
+
 ## Development
 
 ```bash
