@@ -162,6 +162,7 @@ Small, free tools for building and checking AI systems:
 
 - **[evalsize](https://github.com/ai-with-md/evalsize)**: how many eval examples you need before a difference between prompts or models means anything.
 - **[evalnoise](https://github.com/ai-with-md/evalnoise)**: where the noise in an eval score comes from (questions, judges, prompt wordings, reruns), and where to spend the next API calls.
+- **[rolloutwatch](https://github.com/ai-with-md/rolloutwatch)**: whether a prompt or model change made quality worse, checking as often as you like without false alarms.
 - **[costplan](https://github.com/ai-with-md/costplan)**: what an AI agent will cost and what budget cap to set, from a handful of pilot runs.
 
 ## Development
