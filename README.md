@@ -161,6 +161,7 @@ The [demo](https://github.com/ai-with-md/sturdytools/blob/main/examples/flaky_to
 Small, free tools for building and checking AI systems:
 
 - **[evalsize](https://github.com/ai-with-md/evalsize)**: how many eval examples you need before a difference between prompts or models means anything.
+- **[evalnoise](https://github.com/ai-with-md/evalnoise)**: where the noise in an eval score comes from (questions, judges, prompt wordings, reruns), and where to spend the next API calls.
 - **[costplan](https://github.com/ai-with-md/costplan)**: what an AI agent will cost and what budget cap to set, from a handful of pilot runs.
 
 ## Development
